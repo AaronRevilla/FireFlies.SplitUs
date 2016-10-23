@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1004866913187",
+    "firebase_url": "https://splitus-4e68e.firebaseio.com",
+    "project_id": "splitus-4e68e",
+    "storage_bucket": "splitus-4e68e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004866913187:android:f1b422d6ea4dea1d",
+        "android_client_info": {
+          "package_name": "com.project.aaronkoti.splitus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004866913187-972pms6nn5sngc5i069fss21utqnriop.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.aaronkoti.splitus",
+            "certificate_hash": "A1062C693D7589289B77CAC38D25CA15E8E2845E"
+          }
+        },
+        {
+          "client_id": "1004866913187-3l2i8rbnhq3e4ldkrr8nf44b56bs3sgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk2WTynKWclbS5L3VntrgbKh_fiTj17HM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004866913187-3l2i8rbnhq3e4ldkrr8nf44b56bs3sgt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

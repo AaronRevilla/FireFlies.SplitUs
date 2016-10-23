@@ -1,0 +1,108 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.aaronkoti.splitus.menuViews.UserInfo">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8bed1818">
+
+        <!--<com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"
+            app:civ_border_color="#EEEEEE"
+            app:civ_border_width="4dp"
+            app:civ_shadow="true"
+            app:civ_shadow_radius="10"
+            app:civ_shadow_color="#8BC34A"
+            />-->
+
+        <ImageView
+            android:id="@+id/fragmentUserImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/com_facebook_profile_picture_blank_square"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="66dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserEmail"
+            android:text="text"
+            android:layout_below="@+id/fragmentUserEmailTitle"
+            android:layout_alignLeft="@+id/fragmentUserPhone"
+            android:layout_alignStart="@+id/fragmentUserPhone"
+            android:textAlignment="viewStart"
+            android:layout_alignRight="@+id/fragmentUserPhone"
+            android:layout_alignEnd="@+id/fragmentUserPhone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserNameTitle"
+            android:text="Name:"
+            android:textStyle="bold"
+            android:layout_marginRight="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="9dp"
+            android:layout_below="@+id/fragmentUserImage"
+            android:layout_toLeftOf="@+id/fragmentUserImage"
+            android:layout_toStartOf="@+id/fragmentUserImage" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserPhoneTitle"
+            android:text="Phone:"
+            android:textStyle="bold"
+            android:layout_below="@+id/fragmentUserName"
+            android:layout_alignLeft="@+id/fragmentUserNameTitle"
+            android:layout_alignStart="@+id/fragmentUserNameTitle"
+            android:layout_marginTop="17dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserEmailTitle"
+            android:text="Email:"
+            android:textStyle="bold"
+            android:layout_below="@+id/fragmentUserPhone"
+            android:layout_alignRight="@+id/fragmentUserNameTitle"
+            android:layout_alignEnd="@+id/fragmentUserNameTitle"
+            android:layout_marginTop="17dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserName"
+            android:text="text"
+            android:textAlignment="viewStart"
+            android:layout_below="@+id/fragmentUserNameTitle"
+            android:layout_alignLeft="@+id/fragmentUserEmailTitle"
+            android:layout_alignStart="@+id/fragmentUserEmailTitle"
+            android:layout_toStartOf="@+id/fragmentUserImage"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragmentUserPhone"
+            android:text="text"
+            android:textAlignment="viewStart"
+            android:layout_below="@+id/fragmentUserPhoneTitle"
+            android:layout_alignLeft="@+id/fragmentUserPhoneTitle"
+            android:layout_alignStart="@+id/fragmentUserPhoneTitle"
+            android:layout_alignRight="@+id/fragmentUserName"
+            android:layout_alignEnd="@+id/fragmentUserName" />
+
+    </RelativeLayout>
+
+</FrameLayout>
