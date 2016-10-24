@@ -23,11 +23,47 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/eventTitle"
+            android:id="@+id/linearTotal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Total amount: $"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="0.0"
+                android:inputType="numberDecimal"
+                android:id="@+id/totalAmountBill"
+                android:layout_weight="0.95" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:backgroundTint="#ddd"
+                style="@style/com_facebook_button"
+                android:id="@+id/saveBillButton"
+                android:layout_alignBottom="@+id/linearTotal"
+                android:layout_alignLeft="@+id/linearTotal"
+                app:srcCompat="@android:drawable/ic_menu_save"
+                app:rippleColor="?attr/colorBackgroundFloating" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/picturesRecyclerView"
-            android:layout_below="@+id/eventTitle"/>
+            android:layout_below="@+id/linearTotal"/>
 
         <android.support.design.widget.FloatingActionButton
             android:layout_height="match_parent"
@@ -42,55 +78,8 @@
             android:layout_marginBottom="10dp"
             android:layout_marginRight="20dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/picturesRecyclerView"
-            android:id="@+id/linearTotal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Total amount: $"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:gravity="center"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="0.0"
-                android:inputType="numberDecimal"
-                android:id="@+id/totalAmountBill"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/linearTotal"
-            android:id="@+id/saveContainer"
-
-            >
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="SAVE"
-                style="@style/com_facebook_button"
-                android:id="@+id/saveBillButton"/>
-
-        </LinearLayout>
-
-        <!--<ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imgContainer"
-            android:layout_below="@+id/saveContainer"/>-->
 
     </RelativeLayout>
-
-
 
 
 </FrameLayout>

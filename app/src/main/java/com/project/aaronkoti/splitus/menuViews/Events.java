@@ -16,13 +16,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Events extends Fragment {
 
     public User user;
-    public List<Events> listEvents;
+    public List<Events> listEvents = new ArrayList<>();
     public RecyclerView eventList;
     public FloatingActionButton addEvent;
 
@@ -70,6 +71,7 @@ public class Events extends Fragment {
                 AddEvent addEventFrag= new AddEvent();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("UserInfo", user);
+                bundle.putInt("EventNumber", listEvents.size());
                 addEventFrag.setArguments(bundle);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragmentWrapper, addEventFrag)

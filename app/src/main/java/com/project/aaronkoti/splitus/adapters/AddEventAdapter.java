@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.ImageBill;
 import com.project.aaronkoti.splitus.menuViews.AddFriends;
@@ -28,6 +29,8 @@ public class AddEventAdapter extends RecyclerView.Adapter<AddEventAdapter.ViewHo
         this.billsImages  =  billsImages;
     }
 
+    public Context getContex(){return context;}
+
     @Override
     public AddEventAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -45,7 +48,17 @@ public class AddEventAdapter extends RecyclerView.Adapter<AddEventAdapter.ViewHo
     public void onBindViewHolder(AddEventAdapter.ViewHolder holder, int position) {
         ImageBill auxImg = billsImages.get(position);
 
-        holder.billImage.setImageBitmap( auxImg.getBitmap());
+        //holder.billImage.setImageBitmap( auxImg.getBitmap());
+        if(auxImg.getImgUrl() != null){
+            Glide
+                    .with(getContex())
+                    .load(auxImg.getImgUrl())
+                    .centerCrop()
+                    //.override(500, 500)
+                    .placeholder(R.drawable.loading2)
+                    .crossFade()
+                    .into(holder.billImage);
+        }
         holder.imgName.setText(auxImg.getName());
 
     }

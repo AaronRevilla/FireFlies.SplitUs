@@ -28,10 +28,12 @@ public class Bill {
     @SerializedName("status")
     @Expose
     private String status;
-//    @SerializedName("imgList")
-//    @Expose
-//    private List<ImageBill> imgList;
-
+    @SerializedName("imgList")
+    @Expose
+    private List<ImageBill> imgList;
+    @SerializedName("usrList")
+    @Expose
+    private List<User> usrList;
 
     public Bill(){}
 
@@ -143,11 +145,39 @@ public class Bill {
         this.status = status;
     }
 
-//    public List<ImageBill> getImgList() {
-//        return imgList;
-//    }
-//
-//    public void setImgList(List<ImageBill> imgList) {
-//        this.imgList = imgList;
-//    }
+    /**
+     *
+     * @return
+     * The imgList
+     */
+    public List<ImageBill> getImgList() {
+        return imgList;
+    }
+
+    /**
+     *
+     * @param imgList
+     * The status
+     */
+    public void setImgList(List<ImageBill> imgList) {
+        this.imgList = imgList;
+    }
+
+    /**
+     *
+     * @return
+     * The usrList
+     */
+    public List<User> getUsrList() {
+        return usrList;
+    }
+
+    /**
+     *
+     * @param usrList
+     * The usrList
+     */
+    public void setUsrList(List<User> usrList) {
+        this.usrList = usrList;
+    }
 }

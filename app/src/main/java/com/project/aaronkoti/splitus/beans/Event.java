@@ -4,10 +4,11 @@ import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Generated("org.jsonschema2pojo")
-public class Event {
+public class Event implements Serializable{
 
     @SerializedName("id")
     @Expose
