@@ -11,19 +11,6 @@
         android:background="#8b182ded">
 
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_height="match_parent"
-            android:clickable="true"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_input_add"
-            android:id="@+id/fragmentAddFriend"
-            android:layout_alignBottom="@+id/fragmentFriendsRecyclerV"
-            android:layout_alignRight="@+id/fragmentFriendsRecyclerV"
-            app:backgroundTint="#ddd"
-            android:layout_width="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="20dp"/>
-
         <TextView
             android:text="Events"
             android:layout_width="match_parent"
@@ -40,10 +27,24 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/fragmentFriendsRecyclerV"
+            android:id="@+id/fragmentEventRecyclerV"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/friendsTitle"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_height="match_parent"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/add_48"
+            android:id="@+id/fragmentAddEvent"
+            android:layout_alignBottom="@+id/fragmentEventRecyclerV"
+            android:layout_alignRight="@+id/fragmentEventRecyclerV"
+            app:backgroundTint="#ddd"
+            android:layout_width="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"/>
     </RelativeLayout>
 
 </FrameLayout>

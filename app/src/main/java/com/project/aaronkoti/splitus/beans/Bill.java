@@ -4,6 +4,9 @@ import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+import java.util.List;
+
 @Generated("org.jsonschema2pojo")
 public class Bill {
 
@@ -18,13 +21,17 @@ public class Bill {
     private String description;
     @SerializedName("amount")
     @Expose
-    private String amount;
+    private float amount;
     @SerializedName("date")
     @Expose
-    private String date;
+    private Date date;
     @SerializedName("status")
     @Expose
     private String status;
+//    @SerializedName("imgList")
+//    @Expose
+//    private List<ImageBill> imgList;
+
 
     public Bill(){}
 
@@ -87,7 +94,7 @@ public class Bill {
      * @return
      * The amount
      */
-    public String getAmount() {
+    public float getAmount() {
         return amount;
     }
 
@@ -96,7 +103,7 @@ public class Bill {
      * @param amount
      * The amount
      */
-    public void setAmount(String amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -105,7 +112,7 @@ public class Bill {
      * @return
      * The date
      */
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -114,7 +121,7 @@ public class Bill {
      * @param date
      * The date
      */
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -136,4 +143,11 @@ public class Bill {
         this.status = status;
     }
 
+//    public List<ImageBill> getImgList() {
+//        return imgList;
+//    }
+//
+//    public void setImgList(List<ImageBill> imgList) {
+//        this.imgList = imgList;
+//    }
 }

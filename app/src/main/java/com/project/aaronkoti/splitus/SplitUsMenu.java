@@ -159,15 +159,10 @@ public class SplitUsMenu extends AppCompatActivity
         if (id == R.id.nav_events) {
             // Handle the event for creating events
             Log.d(TAG, "nav_event");
+            bundle.putSerializable("UserInfo", user );
             Events eventsFrag = new Events();
+            eventsFrag.setArguments(bundle);
             ft.replace(fragmentWrapper.getId(), eventsFrag);
-            /*if(ft.isEmpty()){
-                ft.add(fragmentWrapper.getId(), eventsFrag);
-            }
-            else{
-                ft.addToBackStack(null);
-                ft.replace(fragmentWrapper.getId(), eventsFrag);
-            }*/
             ft.commit();
 
         } else if (id == R.id.nav_add_friends) {

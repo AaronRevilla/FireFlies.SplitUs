@@ -1,5 +1,7 @@
 package com.project.aaronkoti.splitus.beans;
 
+import android.graphics.Bitmap;
+
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,9 +12,12 @@ public class ImageBill {
     @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("fk_bill")
+    @SerializedName("bitmap")
     @Expose
-    private String fkBill;
+    private Bitmap bitmap;
+    @SerializedName("name")
+    @Expose
+    private String name;
     @SerializedName("img_url")
     @Expose
     private String imgUrl;
@@ -25,94 +30,51 @@ public class ImageBill {
 
     public ImageBill(){}
 
-    /**
-     *
-     * @return
-     * The id
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     *
-     * @param id
-     * The id
-     */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     *
-     * @return
-     * The fkBill
-     */
-    public String getFkBill() {
-        return fkBill;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
-    /**
-     *
-     * @param fkBill
-     * The fk_bill
-     */
-    public void setFkBill(String fkBill) {
-        this.fkBill = fkBill;
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
-    /**
-     *
-     * @return
-     * The imgUrl
-     */
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getImgUrl() {
         return imgUrl;
     }
 
-    /**
-     *
-     * @param imgUrl
-     * The img_url
-     */
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
 
-    /**
-     *
-     * @return
-     * The date
-     */
     public String getDate() {
         return date;
     }
 
-    /**
-     *
-     * @param date
-     * The date
-     */
     public void setDate(String date) {
         this.date = date;
     }
 
-    /**
-     *
-     * @return
-     * The status
-     */
     public String getStatus() {
         return status;
     }
 
-    /**
-     *
-     * @param status
-     * The status
-     */
     public void setStatus(String status) {
         this.status = status;
     }
-
 }

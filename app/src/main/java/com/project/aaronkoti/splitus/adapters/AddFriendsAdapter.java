@@ -47,7 +47,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
         View contactView = inflater.inflate(R.layout.add_friends_element, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
+        AddFriendsAdapter.ViewHolder viewHolder = new AddFriendsAdapter.ViewHolder(contactView);
         return viewHolder;
     }
 

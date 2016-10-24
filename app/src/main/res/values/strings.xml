@@ -27,5 +27,5 @@
     <string name="title_activity_split_us_menu">SplitUsMenu</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="event_title_fragment">Event</string>
 </resources>

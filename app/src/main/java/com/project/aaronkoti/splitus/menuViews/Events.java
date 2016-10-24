@@ -2,6 +2,7 @@ package com.project.aaronkoti.splitus.menuViews;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ public class Events extends Fragment {
     public User user;
     public List<Events> listEvents;
     public RecyclerView eventList;
+    public FloatingActionButton addEvent;
 
 
     public Events() {
@@ -59,11 +61,24 @@ public class Events extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_events, container, false);
 
-        eventList = ((RecyclerView) view.findViewById(R.id.fragmentFriendsRecyclerV));
+        eventList = ((RecyclerView) view.findViewById(R.id.fragmentEventRecyclerV));
+        addEvent = ((FloatingActionButton) view.findViewById(R.id.fragmentAddEvent));
 
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddEvent addEventFrag= new AddEvent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("UserInfo", user);
+                addEventFrag.setArguments(bundle);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentWrapper, addEventFrag)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         eventList.setLayoutManager( new LinearLayoutManager(getContext()));
-
 
         return view;
     }

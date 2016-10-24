@@ -54,7 +54,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public ViewHolder(View itemView) {
             super(itemView);
 
-            
+
 
         }
     }
