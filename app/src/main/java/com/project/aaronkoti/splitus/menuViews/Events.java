@@ -24,6 +24,7 @@ import com.project.aaronkoti.splitus.beans.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -67,16 +68,37 @@ public class Events extends Fragment {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference root =  db.getReference("SplitUs");
-        DatabaseReference userRef = root.child("Bills").child(user.getUid());
+        DatabaseReference userRef = root.child("Bills");
 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listBills.clear();
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    listBills.add(child.getValue(Bill.class));
-                    Collections.sort( listBills, new EventComparator());
-                    adapter.setNewList(listBills);
+
+                if(dataSnapshot.hasChildren()){
+                    for(DataSnapshot childUsr: dataSnapshot.getChildren()){//iterates over usrs ids
+
+                        if(childUsr.hasChildren()){
+
+                            for(DataSnapshot childBills: childUsr.getChildren()){// iterates over users bills
+
+                                Bill auxBillUser  = childBills.getValue(Bill.class);
+                                List<User> auxUsersBills = auxBillUser.getUsrList();
+                                Log.d("USER BILLS", auxUsersBills.size() + "");
+
+                                for (User usr: auxUsersBills){
+                                    if(usr.getUid().equals(user.getUid())){
+                                        listBills.add(auxBillUser);
+                                        Collections.sort( listBills, new EventComparator());
+                                        adapter.setNewList(listBills);
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
                 }
             }
 
@@ -90,7 +112,7 @@ public class Events extends Fragment {
 
         eventList = ((RecyclerView) view.findViewById(R.id.fragmentEventRecyclerV));
         eventList.setLayoutManager( new LinearLayoutManager(getContext()));
-        adapter = new EventAdapter(getContext(), listBills, user);
+        adapter = new EventAdapter(getContext(), listBills, user, getFragmentManager());
         eventList.setAdapter(adapter);
 
         addEvent = ((FloatingActionButton) view.findViewById(R.id.fragmentAddEvent));
@@ -102,6 +124,10 @@ public class Events extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("UserInfo", user);
                 bundle.putInt("EventNumber", listEvents.size());
+                Bill newBill = new Bill();
+                newBill.setDate( new Date());
+                newBill.setAmount( (float) 0);
+                bundle.putSerializable("Bill", newBill);
                 addEventFrag.setArguments(bundle);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragmentWrapper, addEventFrag)

@@ -102,6 +102,7 @@ public class AddEvent extends Fragment {
         this.user = (User) args.getSerializable("UserInfo");
         this.event = (Event) args.getSerializable("EventInfo");
         this.eventNumber = args.getInt("EventNumber");
+        this.bill = (Bill)args.getSerializable("Bill");
     }
 
     @Override
@@ -110,10 +111,15 @@ public class AddEvent extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_add_event, container, false);
 
-        bill = new Bill();
-        bill.setDate( new Date());
-
+        //set amount
         totalAmount = (EditText) view.findViewById(R.id.totalAmountBill);
+        totalAmount.setText(String.valueOf( bill.getAmount()));
+
+        //if their have some pictures, add
+        if(bill.getImgList() != null ){
+            imgList = bill.getImgList();
+            numImages = imgList.size();
+        }
 
         imgRecyclerView = (RecyclerView) view.findViewById(R.id.picturesRecyclerView);
         imgList = new ArrayList<>();
@@ -153,7 +159,9 @@ public class AddEvent extends Fragment {
             }
         });
 
-        usrList.add(user);
+        if(!usrList.contains(user)){
+            usrList.add(user);
+        }
 
         return view;
     }
@@ -212,7 +220,15 @@ public class AddEvent extends Fragment {
     public void createModal(){
         // custom dialog
         listOfUsers = new ArrayList<>();
-        adapterDialog = new AddFriendDialogAdapter(getContext(), listOfUsers);
+        List<User> friendToSplitBill;
+        if(bill.getUsrList() != null){
+            friendToSplitBill = bill.getUsrList();
+        }
+        else{
+            friendToSplitBill = new ArrayList<>();
+        }
+
+        adapterDialog = new AddFriendDialogAdapter(getContext(), listOfUsers, friendToSplitBill);
         loadFriends();
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_add_users_bill);

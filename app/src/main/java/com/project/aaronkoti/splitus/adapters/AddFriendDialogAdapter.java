@@ -27,10 +27,10 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
     public Context context;
     public List<User> selectedUsers;
 
-    public AddFriendDialogAdapter(Context context, List<User> users){
+    public AddFriendDialogAdapter(Context context, List<User> users, List<User> selectedUsers){
         this.users = users;
         this.context = context;
-        selectedUsers = new ArrayList<>();
+        this.selectedUsers = selectedUsers;
     }
 
     public Context getContext(){return context;}
@@ -79,6 +79,9 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
         }
         else{
             holder.usrEmail.setText("No Email");
+        }
+        if(selectedUsers.contains(auxUser)){
+            holder.selection.setChecked(true);
         }
     }
 

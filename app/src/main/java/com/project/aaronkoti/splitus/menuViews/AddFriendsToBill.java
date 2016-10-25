@@ -60,7 +60,7 @@ public class AddFriendsToBill extends DialogFragment {
         Bundle args = getArguments();
         this.user = (User) args.getSerializable("UserInfo");
         listOfUsers = new ArrayList<>();
-        adapter = new AddFriendDialogAdapter(getContext(), listOfUsers);
+        //adapter = new AddFriendDialogAdapter(getContext(), listOfUsers);
         loadFriends();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
