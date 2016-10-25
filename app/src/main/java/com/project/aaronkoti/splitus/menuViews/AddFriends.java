@@ -60,7 +60,7 @@ public class AddFriends extends Fragment {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                users.clear();
                 for(DataSnapshot child: dataSnapshot.getChildren()){
                     //Log.d("DEBUG", child.getKey() + " " + user.getUid());
                     if(!(child.getKey().equals(user.getUid()))){

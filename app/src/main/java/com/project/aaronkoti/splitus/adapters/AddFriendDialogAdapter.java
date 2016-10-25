@@ -23,9 +23,9 @@ import java.util.List;
 
 public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialogAdapter.ViewHolder> {
 
-    List<User> users;
-    Context context;
-    List<User> selectedUsers;
+    public List<User> users;
+    public Context context;
+    public List<User> selectedUsers;
 
     public AddFriendDialogAdapter(Context context, List<User> users){
         this.users = users;
@@ -96,6 +96,7 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
     public List<User> getSelectedUsers(){return selectedUsers;}
 
     public void setNewList(List<User> newUsers){
+        selectedUsers.clear();
         this.users = null;
         this.users = newUsers;
         notifyDataSetChanged();
@@ -103,7 +104,7 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
 
     @Override
     public int getItemCount() {
-        return 0;
+        return users.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -122,6 +123,7 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
             usrPhone = ((TextView) itemView.findViewById(R.id.vh_addFriend_phone));
             usrEmail = ((TextView) itemView.findViewById(R.id.vh_addFriend_email));
             selection = ((RadioButton) itemView.findViewById(R.id.vh_addFriend_rb));
+
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

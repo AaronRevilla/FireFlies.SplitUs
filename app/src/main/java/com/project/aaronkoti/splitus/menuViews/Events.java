@@ -11,12 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.aaronkoti.splitus.R;
+import com.project.aaronkoti.splitus.adapters.EventAdapter;
+import com.project.aaronkoti.splitus.beans.Bill;
 import com.project.aaronkoti.splitus.beans.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -24,8 +31,10 @@ public class Events extends Fragment {
 
     public User user;
     public List<Events> listEvents = new ArrayList<>();
+    public List<Bill> listBills;
     public RecyclerView eventList;
     public FloatingActionButton addEvent;
+    public EventAdapter adapter;
 
 
     public Events() {
@@ -33,14 +42,13 @@ public class Events extends Fragment {
     }
 
 
-   /* public static Events newInstance(String param1, String param2) {
+    public static Events newInstance(User userInfo) {
         Events fragment = new Events();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable("UserInfo", userInfo);
         fragment.setArguments(args);
         return fragment;
-    }*/
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,16 +61,38 @@ public class Events extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        listBills = new ArrayList<>();
         Bundle args = getArguments();
         this.user = (User) args.getSerializable("UserInfo");
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference root =  db.getReference("SplitUs");
-        DatabaseReference userRef = root.child("Events").child(user.getUid());
+        DatabaseReference userRef = root.child("Bills").child(user.getUid());
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listBills.clear();
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    listBills.add(child.getValue(Bill.class));
+                    Collections.sort( listBills, new EventComparator());
+                    adapter.setNewList(listBills);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         View view = inflater.inflate(R.layout.fragment_events, container, false);
 
         eventList = ((RecyclerView) view.findViewById(R.id.fragmentEventRecyclerV));
+        eventList.setLayoutManager( new LinearLayoutManager(getContext()));
+        adapter = new EventAdapter(getContext(), listBills, user);
+        eventList.setAdapter(adapter);
+
         addEvent = ((FloatingActionButton) view.findViewById(R.id.fragmentAddEvent));
 
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +113,13 @@ public class Events extends Fragment {
         eventList.setLayoutManager( new LinearLayoutManager(getContext()));
 
         return view;
+    }
+
+    public class EventComparator implements Comparator<Bill> {
+        @Override
+        public int compare(Bill o1, Bill o2) {
+            return o2.getDate().compareTo(o1.getDate());
+        }
     }
 
 }

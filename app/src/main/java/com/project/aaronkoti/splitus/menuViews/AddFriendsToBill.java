@@ -1,6 +1,7 @@
 package com.project.aaronkoti.splitus.menuViews;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ public class AddFriendsToBill extends DialogFragment {
 
     }
 
+
     public static AddFriendsToBill newInstance(User userInfo) {
         AddFriendsToBill fragment = new AddFriendsToBill();
         Bundle args = new Bundle();
@@ -57,6 +59,7 @@ public class AddFriendsToBill extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = getArguments();
         this.user = (User) args.getSerializable("UserInfo");
+        listOfUsers = new ArrayList<>();
         adapter = new AddFriendDialogAdapter(getContext(), listOfUsers);
         loadFriends();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -78,12 +81,13 @@ public class AddFriendsToBill extends DialogFragment {
         //Buttons
         builder.setPositiveButton("All Set", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
+
             }
         });
 
@@ -101,8 +105,6 @@ public class AddFriendsToBill extends DialogFragment {
     }*/
 
     public void loadFriends(){
-        listOfUsers = new ArrayList<>();
-
         //MakeConnection to DB
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
         final DatabaseReference root =  db.getReference("SplitUs");
@@ -111,6 +113,7 @@ public class AddFriendsToBill extends DialogFragment {
         friendReq.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                listOfUsers.clear();
                 for(DataSnapshot child: dataSnapshot.getChildren()){
                     Friend friend = child.getValue(Friend.class);
                     DatabaseReference friendRef = root.child("Users").child(friend.getFriendId());
@@ -118,9 +121,10 @@ public class AddFriendsToBill extends DialogFragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User auxUs = dataSnapshot.getValue(User.class);
-                            //Log.d("DEBUG", auxUs.toString());
+                            Log.d("DEBUG", auxUs.toString());
                             listOfUsers.add( dataSnapshot.getValue(User.class));
                             adapter.setNewList(listOfUsers);
+                            //dialogtAddFriendsRecyclerV.setAdapter(adapter);
                             //adapter.notifyDataSetChanged();
                         }
 

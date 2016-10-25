@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#8bed1818">
+        >
 
         <!--<com.mikhaellopez.circularimageview.CircularImageView
             android:layout_width="250dp"

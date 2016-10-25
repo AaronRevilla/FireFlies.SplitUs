@@ -2,17 +2,23 @@ package com.project.aaronkoti.splitus.menuViews;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.icu.lang.UScript;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,15 +31,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.adapters.AddEventAdapter;
+import com.project.aaronkoti.splitus.adapters.AddFriendDialogAdapter;
 import com.project.aaronkoti.splitus.beans.Bill;
 import com.project.aaronkoti.splitus.beans.Event;
+import com.project.aaronkoti.splitus.beans.Friend;
 import com.project.aaronkoti.splitus.beans.ImageBill;
 import com.project.aaronkoti.splitus.beans.User;
 
@@ -62,6 +73,12 @@ public class AddEvent extends Fragment {
     public int numImages = 0;
     public String imgName;
     public List<User> usrList = new ArrayList<>();
+
+
+    public List<User> listOfUsers;
+    public AddFriendDialogAdapter adapterDialog;
+    public RecyclerView dialogtAddFriendsRecyclerV;
+    public Button dialogSaveButton;
 
 
     public AddEvent() {
@@ -124,20 +141,15 @@ public class AddEvent extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                bill.setImgList(imgList);
-//                bill.setAmount(Float.parseFloat( totalAmount.getText().toString()));
-//                Log.d("DEBUG", "click save");
-//                //verify if friend rel exist
-//                FirebaseDatabase db = FirebaseDatabase.getInstance();
-//                DatabaseReference root =  db.getReference("SplitUs");
-//                DatabaseReference ref = root.child("Bills").child(user.getUid()).push();
-//                Log.d("DEBUG", ref.getKey());
-//                ref.setValue(bill);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("UserInfo", user);
-                AddFriendsToBill dialogFrag = new AddFriendsToBill();
-                dialogFrag.setArguments(bundle);
-                dialogFrag.show( getFragmentManager(), "AddFriendsToBill");
+                bill.setImgList(imgList);
+                bill.setAmount(Float.parseFloat( totalAmount.getText().toString()));
+                createModal();
+
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("UserInfo", user);
+//                AddFriendsToBill dialogFrag = new AddFriendsToBill();
+//                dialogFrag.setArguments(bundle);
+//                dialogFrag.show( getFragmentManager(), "AddFriendsToBill");
             }
         });
 
@@ -197,6 +209,92 @@ public class AddEvent extends Fragment {
 
     }
 
+    public void createModal(){
+        // custom dialog
+        listOfUsers = new ArrayList<>();
+        adapterDialog = new AddFriendDialogAdapter(getContext(), listOfUsers);
+        loadFriends();
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_add_users_bill);
 
+        // set the custom dialog components - text, image and button
+        dialogtAddFriendsRecyclerV = ((RecyclerView) dialog.findViewById(R.id.dialogtAddFriendsRecyclerV));
+        dialogtAddFriendsRecyclerV.setAdapter(adapterDialog);
+        dialogtAddFriendsRecyclerV.setLayoutManager( new LinearLayoutManager(getContext()));
+        dialogSaveButton = (Button) dialog.findViewById(R.id.dialogSaveButton);
+
+        dialogSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<User> auxFriends = adapterDialog.getSelectedUsers();
+                auxFriends.add(user);
+                bill.setUsrList(auxFriends);
+
+                //verify if friend rel exist
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference root =  db.getReference("SplitUs");
+                DatabaseReference ref = root.child("Bills").child(user.getUid()).push();
+                Log.d("DEBUG", ref.getKey());
+                ref.setValue(bill);
+                dialog.hide();
+                returnToEvents();
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void returnToEvents(){
+        Events eventFrag= new Events();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("UserInfo", user);
+        eventFrag.setArguments(bundle);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragmentWrapper, eventFrag)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void loadFriends(){
+        //MakeConnection to DB
+        final FirebaseDatabase db = FirebaseDatabase.getInstance();
+        final DatabaseReference root =  db.getReference("SplitUs");
+        DatabaseReference friendReq = root.child("Friends").child(user.getUid());
+
+        friendReq.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listOfUsers.clear();
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    Friend friend = child.getValue(Friend.class);
+                    DatabaseReference friendRef = root.child("Users").child(friend.getFriendId());
+                    friendRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User auxUs = dataSnapshot.getValue(User.class);
+                            Log.d("DEBUG", auxUs.toString());
+                            listOfUsers.add( dataSnapshot.getValue(User.class));
+                            adapterDialog.setNewList(listOfUsers);
+                            //dialogtAddFriendsRecyclerV.setAdapter(adapter);
+                            //adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
 
 }
