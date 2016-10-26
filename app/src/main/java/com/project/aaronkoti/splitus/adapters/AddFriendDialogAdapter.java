@@ -51,7 +51,6 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
     @Override
     public void onBindViewHolder(AddFriendDialogAdapter.ViewHolder holder, int position) {
         User auxUser = users.get(position);
-        Log.d("DEBUG FROM ADAPTER", auxUser.toString());
         if(auxUser.getImageUrl() != null){
             Glide.with(getContext())
                     .load(auxUser.getImageUrl())
@@ -80,9 +79,11 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
         else{
             holder.usrEmail.setText("No Email");
         }
+
         if(selectedUsers.contains(auxUser)){
             holder.selection.setChecked(true);
         }
+
     }
 
     public void selectFriend(int position, boolean addFriend){
@@ -99,7 +100,6 @@ public class AddFriendDialogAdapter extends RecyclerView.Adapter<AddFriendDialog
     public List<User> getSelectedUsers(){return selectedUsers;}
 
     public void setNewList(List<User> newUsers){
-        selectedUsers.clear();
         this.users = null;
         this.users = newUsers;
         notifyDataSetChanged();

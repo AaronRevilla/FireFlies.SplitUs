@@ -110,19 +110,22 @@ public class AddEvent extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_add_event, container, false);
-
+        Log.d("DEBUG", bill.toString());
         //set amount
         totalAmount = (EditText) view.findViewById(R.id.totalAmountBill);
         totalAmount.setText(String.valueOf( bill.getAmount()));
 
         //if their have some pictures, add
-        if(bill.getImgList() != null ){
+        if(bill.getImgList() != null && !bill.getImgList().isEmpty() ){
             imgList = bill.getImgList();
+            numImages = imgList.size();
+        }
+        else{
+            imgList = new ArrayList<>();
             numImages = imgList.size();
         }
 
         imgRecyclerView = (RecyclerView) view.findViewById(R.id.picturesRecyclerView);
-        imgList = new ArrayList<>();
         adapter = new AddEventAdapter(getContext(), imgList);
         imgRecyclerView.setAdapter(adapter);
         imgRecyclerView.setLayoutManager( new GridLayoutManager(getContext(), 3));
@@ -158,11 +161,6 @@ public class AddEvent extends Fragment {
 //                dialogFrag.show( getFragmentManager(), "AddFriendsToBill");
             }
         });
-
-        if(!usrList.contains(user)){
-            usrList.add(user);
-        }
-
         return view;
     }
 
@@ -221,7 +219,7 @@ public class AddEvent extends Fragment {
         // custom dialog
         listOfUsers = new ArrayList<>();
         List<User> friendToSplitBill;
-        if(bill.getUsrList() != null){
+        if(bill.getUsrList() != null && !bill.getUsrList().isEmpty()){
             friendToSplitBill = bill.getUsrList();
         }
         else{
@@ -243,13 +241,23 @@ public class AddEvent extends Fragment {
             @Override
             public void onClick(View v) {
                 List<User> auxFriends = adapterDialog.getSelectedUsers();
-                auxFriends.add(user);
+                if(!auxFriends.contains(user)){
+                    auxFriends.add(user);
+                }
                 bill.setUsrList(auxFriends);
 
                 //verify if friend rel exist
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 DatabaseReference root =  db.getReference("SplitUs");
-                DatabaseReference ref = root.child("Bills").child(user.getUid()).push();
+                DatabaseReference ref;
+                if(bill.getId() != null){
+                    ref = root.child("Bills").child(user.getUid()).child(bill.getId());
+                }
+                else{
+                    ref = root.child("Bills").child(user.getUid()).push();
+                    bill.setId(ref.getKey());
+                }
+
                 Log.d("DEBUG", ref.getKey());
                 ref.setValue(bill);
                 dialog.hide();

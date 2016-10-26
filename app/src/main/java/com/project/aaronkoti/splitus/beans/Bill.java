@@ -181,4 +181,18 @@ public class Bill implements Serializable{
     public void setUsrList(List<User> usrList) {
         this.usrList = usrList;
     }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "id='" + id + '\'' +
+                ", billName='" + billName + '\'' +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", date=" + date +
+                ", status='" + status + '\'' +
+                ", imgList=" + imgList +
+                ", usrList=" + usrList +
+                '}';
+    }
 }

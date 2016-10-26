@@ -181,6 +181,17 @@ public class User implements Serializable{
         this.Uid = Uid;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean retVal = false;
+
+        if (obj instanceof User){
+            User a = (User) obj;
+            retVal = this.getUid().equals(a.getUid());
+        }
+
+        return retVal;
+    }
 
     @Override
     public String toString() {
