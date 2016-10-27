@@ -8,7 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.Bill;
 import com.project.aaronkoti.splitus.beans.User;
@@ -87,6 +93,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 .commit();
     }
 
+    public void deleteSelectedBill(int position) {
+        Bill billToRemove = listBills.get(position);
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference root =  db.getReference("SplitUs");
+        Task<Void> friendReq = root.child("Bills").child(billToRemove.getOwnerUid()).child(billToRemove.getId()).removeValue();
+
+        friendReq.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(), "Event Removed", Toast.LENGTH_SHORT);
+            }
+        });
+
+        listBills.remove(position);
+        notifyItemRemoved(position);
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView totalAmount;
@@ -99,6 +124,46 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             totalAmount = (TextView) itemView.findViewById(R.id.vh_bill_totalAmount);
             numUsers = (TextView) itemView.findViewById(R.id.vh_bill_numUsers);
             date = (TextView) itemView.findViewById(R.id.vh_bill_date);
+            SwipeLayout swipeLayout =  (SwipeLayout) itemView.findViewById(R.id.swipe);
+            //set show mode.
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+            swipeLayout.addDrag(SwipeLayout.DragEdge.Left, itemView.findViewById(R.id.bottom_wrapper));
+
+            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onClose(SwipeLayout layout) {
+                    //when the SurfaceView totally cover the BottomView.
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                    //you are swiping.
+                    if(leftOffset < -320){
+                        swipeLeft();
+                    }
+
+                }
+
+                @Override
+                public void onStartOpen(SwipeLayout layout) {
+
+                }
+
+                @Override
+                public void onOpen(SwipeLayout layout) {
+                    //when the BottomView totally show.
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout layout) {
+
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                    //when user's hand released.
+                }
+            });
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +173,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 }
             });
 
+        }
+
+        public void swipeLeft(){
+            deleteSelectedBill(getAdapterPosition());
+        }
+
+        public void swipeRight(){
+            editSelectedBill(getAdapterPosition());
         }
 
 

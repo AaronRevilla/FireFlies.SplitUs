@@ -1,6 +1,7 @@
 package com.project.aaronkoti.splitus.menuViews;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.User;
 
@@ -48,20 +50,31 @@ public class UserInfo extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_info, container, false);
 
 
-        ImageView img = ((ImageView) view.findViewById(R.id.fragmentUserImage));
+        //ImageView img = ((ImageView) view.findViewById(R.id.fragmentUserImage));
         TextView name = ((TextView) view.findViewById(R.id.fragmentUserName));
         TextView phone = ((TextView) view.findViewById(R.id.fragmentUserPhone));
         TextView mail = ((TextView) view.findViewById(R.id.fragmentUserEmail));
+
+
+        CircularImageView circularImageView = (CircularImageView) view.findViewById(R.id.fragmentUserImage);
+// Set Border
+        circularImageView.setBorderColor(getResources().getColor(R.color.tw__light_gray));
+        circularImageView.setBorderWidth(10);
+// Add Shadow with default param
+        circularImageView.addShadow();
+// or with custom param
+        circularImageView.setShadowRadius(15);
+        circularImageView.setShadowColor(Color.LTGRAY);
 
         if(user.getImageUrl() != null){
             Glide
                     .with(this)
                     .load(user.getImageUrl())
-                    .centerCrop()
-                    .override(500, 500)
+                    .fitCenter()
+                    //.override(1000, 1000)
                     //.placeholder(R.drawable.loading_spinner)
                     .crossFade()
-                    .into(img);
+                    .into(circularImageView);
         }
         if(user.getName() != null){
             name.setText(user.getName());

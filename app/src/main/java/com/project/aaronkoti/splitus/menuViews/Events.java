@@ -4,8 +4,10 @@ package com.project.aaronkoti.splitus.menuViews;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 
 public class Events extends Fragment {
@@ -108,12 +112,37 @@ public class Events extends Fragment {
             }
         });
 
-        View view = inflater.inflate(R.layout.fragment_events, container, false);
+        final View view = inflater.inflate(R.layout.fragment_events, container, false);
+
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                EventAdapter.ViewHolder auxVH = (EventAdapter.ViewHolder) viewHolder;
+                if(swipeDir == ItemTouchHelper.RIGHT){
+                    auxVH.swipeRight();
+                }
+                if(swipeDir == ItemTouchHelper.LEFT){
+                    auxVH.swipeLeft();
+                }
+
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
 
         eventList = ((RecyclerView) view.findViewById(R.id.fragmentEventRecyclerV));
+        eventList.setItemAnimator( new DefaultItemAnimator());
         eventList.setLayoutManager( new LinearLayoutManager(getContext()));
         adapter = new EventAdapter(getContext(), listBills, user, getFragmentManager());
         eventList.setAdapter(adapter);
+        itemTouchHelper.attachToRecyclerView(eventList);
 
         addEvent = ((FloatingActionButton) view.findViewById(R.id.fragmentAddEvent));
 

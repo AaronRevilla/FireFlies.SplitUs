@@ -1,6 +1,7 @@
 package com.project.aaronkoti.splitus.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.Friend;
 import com.project.aaronkoti.splitus.beans.User;
@@ -148,7 +150,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView userImg;
+        CircularImageView userImg;
         public TextView usrName;
         public TextView usrPhone;
         public TextView usrEmail;
@@ -157,11 +159,21 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
 
-            userImg = ((ImageView) itemView.findViewById(R.id.vh_addFriend_Img));
+            //userImg = ((ImageView) itemView.findViewById(R.id.vh_addFriend_Img));
             usrName = ((TextView) itemView.findViewById(R.id.vh_addFriend_name));
             usrPhone = ((TextView) itemView.findViewById(R.id.vh_addFriend_phone));
             usrEmail = ((TextView) itemView.findViewById(R.id.vh_addFriend_email));
             selection = ((RadioButton) itemView.findViewById(R.id.vh_addFriend_rb));
+
+            userImg = (CircularImageView) itemView.findViewById(R.id.vh_addFriend_Img);
+// Set Border
+            userImg.setBorderColor(itemView.getResources().getColor(R.color.tw__light_gray));
+            userImg.setBorderWidth(2);
+// Add Shadow with default param
+            userImg.addShadow();
+// or with custom param
+            userImg.setShadowRadius(5);
+            userImg.setShadowColor(Color.LTGRAY);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -249,14 +249,25 @@ public class AddEvent extends Fragment {
                 //verify if friend rel exist
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 DatabaseReference root =  db.getReference("SplitUs");
+
+                DatabaseReference ownerRef;
+                if(bill.getOwnerUid() != null){
+                    ownerRef = root.child("Bills").child(bill.getOwnerUid());
+                }
+                else{
+                    ownerRef = root.child("Bills").child(user.getUid());
+                    bill.setOwnerUid( user.getUid());
+                }
+
                 DatabaseReference ref;
                 if(bill.getId() != null){
-                    ref = root.child("Bills").child(user.getUid()).child(bill.getId());
+                    ref = ownerRef.child(bill.getId());
                 }
                 else{
                     ref = root.child("Bills").child(user.getUid()).push();
                     bill.setId(ref.getKey());
                 }
+
 
                 Log.d("DEBUG", ref.getKey());
                 ref.setValue(bill);

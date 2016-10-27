@@ -35,6 +35,9 @@ public class Bill implements Serializable{
     @SerializedName("usrList")
     @Expose
     private List<User> usrList;
+    @SerializedName("billOwner")
+    @Expose
+    private String ownerUid;
 
     public Bill(){}
 
@@ -180,6 +183,14 @@ public class Bill implements Serializable{
      */
     public void setUsrList(List<User> usrList) {
         this.usrList = usrList;
+    }
+
+    public String getOwnerUid() {
+        return ownerUid;
+    }
+
+    public void setOwnerUid(String ownerUid) {
+        this.ownerUid = ownerUid;
     }
 
     @Override

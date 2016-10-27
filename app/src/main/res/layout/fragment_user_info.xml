@@ -11,25 +11,31 @@
         android:layout_height="match_parent"
         >
 
-        <!--<com.mikhaellopez.circularimageview.CircularImageView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+        <com.mikhaellopez.circularimageview.CircularImageView
+
             android:src="@drawable/com_facebook_profile_picture_blank_square"
             app:civ_border_color="#EEEEEE"
             app:civ_border_width="4dp"
             app:civ_shadow="true"
             app:civ_shadow_radius="10"
             app:civ_shadow_color="#8BC34A"
-            />-->
-
-        <ImageView
-            android:id="@+id/fragmentUserImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/com_facebook_profile_picture_blank_square"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="66dp" />
+            android:layout_marginTop="66dp"
+            android:id="@+id/fragmentUserImage"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+
+            />
+
+        <!--<ImageView-->
+            <!--android:id="@+id/fragmentUserImage"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:srcCompat="@drawable/com_facebook_profile_picture_blank_square"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginTop="66dp" />-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,7 +47,8 @@
             android:layout_alignStart="@+id/fragmentUserPhone"
             android:textAlignment="viewStart"
             android:layout_alignRight="@+id/fragmentUserPhone"
-            android:layout_alignEnd="@+id/fragmentUserPhone" />
+            android:layout_alignEnd="@+id/fragmentUserPhone"
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +61,8 @@
             android:layout_marginTop="9dp"
             android:layout_below="@+id/fragmentUserImage"
             android:layout_toLeftOf="@+id/fragmentUserImage"
-            android:layout_toStartOf="@+id/fragmentUserImage" />
+            android:layout_toStartOf="@+id/fragmentUserImage"
+            android:textSize="24sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,7 +73,8 @@
             android:layout_below="@+id/fragmentUserName"
             android:layout_alignLeft="@+id/fragmentUserNameTitle"
             android:layout_alignStart="@+id/fragmentUserNameTitle"
-            android:layout_marginTop="17dp" />
+            android:layout_marginTop="17dp"
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,7 +85,8 @@
             android:layout_below="@+id/fragmentUserPhone"
             android:layout_alignRight="@+id/fragmentUserNameTitle"
             android:layout_alignEnd="@+id/fragmentUserNameTitle"
-            android:layout_marginTop="17dp" />
+            android:layout_marginTop="17dp"
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -89,7 +99,8 @@
             android:layout_alignStart="@+id/fragmentUserEmailTitle"
             android:layout_toStartOf="@+id/fragmentUserImage"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -101,7 +112,8 @@
             android:layout_alignLeft="@+id/fragmentUserPhoneTitle"
             android:layout_alignStart="@+id/fragmentUserPhoneTitle"
             android:layout_alignRight="@+id/fragmentUserName"
-            android:layout_alignEnd="@+id/fragmentUserName" />
+            android:layout_alignEnd="@+id/fragmentUserName"
+            android:textSize="24sp"/>
 
     </RelativeLayout>
 
