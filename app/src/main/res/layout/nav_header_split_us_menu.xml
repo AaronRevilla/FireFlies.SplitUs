@@ -38,4 +38,12 @@
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />
 
+    <TextView
+        android:id="@+id/net_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="offline"
+        android:textStyle="normal|italic"
+        android:paddingTop="4dp"/>
+
 </LinearLayout>

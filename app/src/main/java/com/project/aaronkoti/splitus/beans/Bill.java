@@ -38,6 +38,9 @@ public class Bill implements Serializable{
     @SerializedName("billOwner")
     @Expose
     private String ownerUid;
+    @SerializedName("amountEachOne")
+    @Expose
+    private float amountEachOne;
 
     public Bill(){}
 
@@ -191,6 +194,15 @@ public class Bill implements Serializable{
 
     public void setOwnerUid(String ownerUid) {
         this.ownerUid = ownerUid;
+    }
+
+
+    public float getAmountEachOne() {
+        return amountEachOne;
+    }
+
+    public void setAmountEachOne(float amountEachOne) {
+        this.amountEachOne = amountEachOne;
     }
 
     @Override

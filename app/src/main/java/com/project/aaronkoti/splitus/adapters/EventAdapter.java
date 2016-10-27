@@ -68,7 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     public void onBindViewHolder(EventAdapter.ViewHolder holder, int position) {
         Bill bill = listBills.get(position);
         int billSize = bill.getUsrList().size();
-        holder.totalAmount.setText( String.valueOf(bill.getAmount()) + " / " + billSize + " = " + String.valueOf(bill.getAmount() / (float) billSize));
+        holder.totalAmount.setText( String.valueOf(bill.getAmount()) + " / " + billSize + " = " + String.valueOf(bill.getAmountEachOne()));
         holder.numUsers.setText(billSize+"");
         holder.date.setText(bill.getDate().toString());
     }
@@ -124,46 +124,46 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             totalAmount = (TextView) itemView.findViewById(R.id.vh_bill_totalAmount);
             numUsers = (TextView) itemView.findViewById(R.id.vh_bill_numUsers);
             date = (TextView) itemView.findViewById(R.id.vh_bill_date);
-            SwipeLayout swipeLayout =  (SwipeLayout) itemView.findViewById(R.id.swipe);
-            //set show mode.
-            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-            swipeLayout.addDrag(SwipeLayout.DragEdge.Left, itemView.findViewById(R.id.bottom_wrapper));
-
-            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-                @Override
-                public void onClose(SwipeLayout layout) {
-                    //when the SurfaceView totally cover the BottomView.
-                }
-
-                @Override
-                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-                    //you are swiping.
-                    if(leftOffset < -320){
-                        swipeLeft();
-                    }
-
-                }
-
-                @Override
-                public void onStartOpen(SwipeLayout layout) {
-
-                }
-
-                @Override
-                public void onOpen(SwipeLayout layout) {
-                    //when the BottomView totally show.
-                }
-
-                @Override
-                public void onStartClose(SwipeLayout layout) {
-
-                }
-
-                @Override
-                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                    //when user's hand released.
-                }
-            });
+//            SwipeLayout swipeLayout =  (SwipeLayout) itemView.findViewById(R.id.swipe);
+//            //set show mode.
+//            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+//            swipeLayout.addDrag(SwipeLayout.DragEdge.Left, itemView.findViewById(R.id.bottom_wrapper));
+//
+//            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+//                @Override
+//                public void onClose(SwipeLayout layout) {
+//                    //when the SurfaceView totally cover the BottomView.
+//                }
+//
+//                @Override
+//                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+//                    //you are swiping.
+//                    if(leftOffset < -320){
+//                        swipeLeft();
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onStartOpen(SwipeLayout layout) {
+//
+//                }
+//
+//                @Override
+//                public void onOpen(SwipeLayout layout) {
+//                    //when the BottomView totally show.
+//                }
+//
+//                @Override
+//                public void onStartClose(SwipeLayout layout) {
+//
+//                }
+//
+//                @Override
+//                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+//                    //when user's hand released.
+//                }
+//            });
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -27,6 +27,18 @@ public class ImageBill implements Serializable{
     @Expose
     private String status;
 
+    @SerializedName("usrUid")
+    @Expose
+    private String usrUid;
+    @SerializedName("billId")
+    @Expose
+    private String billId;
+    @SerializedName("img")
+    @Expose
+    private String img;
+
+
+
     public ImageBill(){}
 
     /**
@@ -117,6 +129,30 @@ public class ImageBill implements Serializable{
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUsrUid() {
+        return usrUid;
+    }
+
+    public void setUsrUid(String usrUid) {
+        this.usrUid = usrUid;
+    }
+
+    public String getBillId() {
+        return billId;
+    }
+
+    public void setBillId(String billId) {
+        this.billId = billId;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     @Override

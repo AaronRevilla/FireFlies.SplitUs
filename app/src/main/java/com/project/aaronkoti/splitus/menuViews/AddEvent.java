@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.icu.lang.UScript;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,33 +179,56 @@ public class AddEvent extends Fragment {
                     ContentResolver cr = getActivity().getContentResolver();
                     Bitmap bitmap;
                     try {
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-                        StorageReference storageRef = storage.getReferenceFromUrl("gs://splitus-4e68e.appspot.com/");
-                        StorageReference spaceRef = storageRef.child("images/" + user.getUid() + "/" + eventNumber).child(imgName);
                         bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] imgData = baos.toByteArray();
+                        if(isConnectedToInternet()){
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference storageRef = storage.getReferenceFromUrl("gs://splitus-4e68e.appspot.com/");
+                            StorageReference spaceRef = storageRef.child("images/" + user.getUid() + "/" + eventNumber).child(imgName);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] imgData = baos.toByteArray();
+                            UploadTask uploadTask = spaceRef.putBytes(imgData);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                    img.setImgUrl(downloadUrl.toString());
+                                    //img.setBitmap(bitmap);
+                                    for(ImageBill idx: imgList){
+                                        if(idx.getName().equals("loadinigImg")){
+                                            imgList.remove(imgList.indexOf(idx));
+                                        }
+                                    }
+                                    img.setName(imgName);
+                                    imgList.add(img);
+                                    adapter.addNewList(imgList);
+                                    numImages++;
+                                }
+                            });
+                            ImageBill imgAux = new ImageBill();
+                            imgAux.setName("loadinigImg");
+                            imgList.add(imgAux);
+                            adapter.addNewList(imgList);
+                        }
+                        else{
 
-                        UploadTask uploadTask = spaceRef.putBytes(imgData);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                img.setImgUrl(downloadUrl.toString());
-                                //img.setBitmap(bitmap);
-                                img.setName(imgName);
-                                imgList.add(img);
-                                adapter.addNewList(imgList);
-                                numImages++;
-                            }
-                        });
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            bitmap.recycle();
+                            byte[] byteArray = baos.toByteArray();
+                            img.setName(imgName);
+                            img.setImg(Base64.encodeToString(byteArray, Base64.DEFAULT));
+                            imgList.add(img);
+                            adapter.addNewList(imgList);
+                            numImages++;
+                        }
+
                         //imgContainer.setImageBitmap(bitmap);
                         //Toast.makeText(getActivity(), selectedImage.toString(), Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
@@ -210,6 +236,7 @@ public class AddEvent extends Fragment {
                                 .show();
                         Log.d("Camera", e.toString());
                     }
+
                 }
         }
 
@@ -268,6 +295,7 @@ public class AddEvent extends Fragment {
                     bill.setId(ref.getKey());
                 }
 
+                bill.setAmountEachOne(bill.getAmount()/auxFriends.size());
 
                 Log.d("DEBUG", ref.getKey());
                 ref.setValue(bill);
@@ -277,6 +305,17 @@ public class AddEvent extends Fragment {
         });
 
         dialog.show();
+    }
+
+    public boolean isConnectedToInternet(){
+        ConnectivityManager cm  = ((ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE));
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public void returnToEvents(){

@@ -1,6 +1,11 @@
 package com.project.aaronkoti.splitus;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -42,9 +47,12 @@ public class SplitUsMenu extends AppCompatActivity
     public ImageView navUsrImg;
     public TextView navUsrName;
     public TextView navUsrMail;
+    public TextView netStatus;
     public LinearLayout fragmentWrapper;
     public FragmentManager fm ;
     public FragmentTransaction ft;
+    public BroadcastReceiver deviceConnectedToWifi;
+    public IntentFilter intentFilterWifi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +82,10 @@ public class SplitUsMenu extends AppCompatActivity
         navUsrImg = ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_userimage));
         navUsrName = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_user_name));
         navUsrMail = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_user_mail));
+        netStatus = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.net_status));
+        if(isConnectedToInternet()){
+            netStatus.setText("online");
+        }
         fragmentWrapper = ((LinearLayout) findViewById(R.id.fragmentWrapper));
 
 
@@ -117,6 +129,54 @@ public class SplitUsMenu extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(deviceConnectedToWifi == null){
+            deviceConnectedToWifi = new BroadcastReceiver() {
+                @Override
+                    public void onReceive(Context context, Intent intent) {
+                    Log.d("DEBUG", intent.getAction().toString());
+
+                    if(intent.getAction().equals( "android.net.wifi.STATE_CHANGE")){
+                        Toast.makeText(getApplicationContext(), "CONNECTED TO WI-FI", Toast.LENGTH_SHORT).show();
+                        netStatus.setText("online");
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "DISCONNECTED FROM WI-FI", Toast.LENGTH_SHORT).show();
+                        netStatus.setText("offline");
+                    }
+                }
+            };
+        }
+        if(intentFilterWifi == null){
+            intentFilterWifi = new IntentFilter();
+            intentFilterWifi.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+            intentFilterWifi.addAction("android.net.wifi.STATE_CHANGE");
+        }
+
+        registerReceiver(deviceConnectedToWifi, intentFilterWifi);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(deviceConnectedToWifi != null){
+            unregisterReceiver(deviceConnectedToWifi);
+        }
+    }
+
+    public boolean isConnectedToInternet(){
+        ConnectivityManager cm  = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE));
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -147,6 +207,8 @@ public class SplitUsMenu extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
