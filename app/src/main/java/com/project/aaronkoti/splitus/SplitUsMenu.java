@@ -138,11 +138,11 @@ public class SplitUsMenu extends AppCompatActivity
                     Log.d("DEBUG", intent.getAction().toString());
 
                     if(intent.getAction().equals( "android.net.wifi.STATE_CHANGE")){
-                        Toast.makeText(getApplicationContext(), "CONNECTED TO WI-FI", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "CONNECTED TO WI-FI", Toast.LENGTH_SHORT).show();
                         netStatus.setText("online");
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "DISCONNECTED FROM WI-FI", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "DISCONNECTED FROM WI-FI", Toast.LENGTH_SHORT).show();
                         netStatus.setText("offline");
                     }
                 }

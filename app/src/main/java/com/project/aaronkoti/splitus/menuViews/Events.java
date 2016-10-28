@@ -88,7 +88,7 @@ public class Events extends Fragment {
 
                                 Bill auxBillUser  = childBills.getValue(Bill.class);
                                 List<User> auxUsersBills = auxBillUser.getUsrList();
-                                Log.d("USER BILLS", auxUsersBills.size() + "");
+                                //Log.d("USER BILLS", auxUsersBills.size() + "");
 
                                 for (User usr: auxUsersBills){
                                     if(usr.getUid().equals(user.getUid())){

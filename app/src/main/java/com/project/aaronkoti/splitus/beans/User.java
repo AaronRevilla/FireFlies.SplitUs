@@ -34,6 +34,9 @@ public class User implements Serializable{
     @SerializedName("Uid")
     @Expose
     private String Uid;
+    @SerializedName("notificationToken")
+    @Expose
+    private String notificationToken;
 
     public User(){}
 
@@ -191,6 +194,14 @@ public class User implements Serializable{
         }
 
         return retVal;
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
     }
 
     @Override

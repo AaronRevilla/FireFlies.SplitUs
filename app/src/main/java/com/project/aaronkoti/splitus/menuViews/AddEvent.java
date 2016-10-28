@@ -1,11 +1,14 @@
 package com.project.aaronkoti.splitus.menuViews;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.icu.lang.UScript;
 import android.net.ConnectivityManager;
@@ -16,8 +19,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +44,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -49,13 +56,25 @@ import com.project.aaronkoti.splitus.beans.Bill;
 import com.project.aaronkoti.splitus.beans.Event;
 import com.project.aaronkoti.splitus.beans.Friend;
 import com.project.aaronkoti.splitus.beans.ImageBill;
+import com.project.aaronkoti.splitus.beans.Notification;
+import com.project.aaronkoti.splitus.beans.ResponseFCM;
+import com.project.aaronkoti.splitus.beans.SplitUsNotification;
 import com.project.aaronkoti.splitus.beans.User;
+import com.project.aaronkoti.splitus.net.FirebaseMessageInterface;
+import com.project.aaronkoti.splitus.net.RetrofitServiceGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class AddEvent extends Fragment {
@@ -82,6 +101,11 @@ public class AddEvent extends Fragment {
     public AddFriendDialogAdapter adapterDialog;
     public RecyclerView dialogtAddFriendsRecyclerV;
     public Button dialogSaveButton;
+
+    public final int CAMERA_PERMISSION_GRANT = 1;
+    public final int EXTERNAL_PERMISSION = 2;
+
+
 
 
     public AddEvent() {
@@ -113,7 +137,8 @@ public class AddEvent extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_add_event, container, false);
-        Log.d("DEBUG", bill.toString());
+        //Log.d("DEBUG", bill.toString());
+
         //set amount
         totalAmount = (EditText) view.findViewById(R.id.totalAmountBill);
         totalAmount.setText(String.valueOf( bill.getAmount()));
@@ -137,14 +162,75 @@ public class AddEvent extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                    imgName = "img_" + numImages + ".jpg";
-                    File photo = new File(Environment.getExternalStorageDirectory(), imgName);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                    imageUri = Uri.fromFile(photo);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+                if(askForCameraPermission()){
+                    if(askForExternalStoragePermission()){
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (takePictureIntent.resolveActivity(view.getContext().getPackageManager()) != null) {
+                            imgName = "img_" + numImages + ".jpg";
+                            File photo = new File(Environment.getExternalStorageDirectory(), imgName);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                            imageUri = Uri.fromFile(photo);
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        }
+                    }
+
                 }
+                else{
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
+
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("REQUEST FOR PERMISSION")
+                                .setMessage("Hi, if you want to use the camera and take photos of your bills, needs to grant this permission")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ActivityCompat.requestPermissions(getActivity() , new String[]{android.Manifest.permission.CAMERA}, CAMERA_PERMISSION_GRANT);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    } else {
+
+                        // No explanation needed, we can request the permission.
+
+                        ActivityCompat.requestPermissions(getActivity() , new String[]{android.Manifest.permission.CAMERA}, CAMERA_PERMISSION_GRANT);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                    }
+                    if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("REQUEST FOR PERMISSION")
+                                .setMessage("Hi, if you want to save the camera photos of your bills, needs to grant this permission")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ActivityCompat.requestPermissions(getActivity() , new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_PERMISSION);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+
+                    }
+                    else{
+
+                        ActivityCompat.requestPermissions(getActivity() , new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_PERMISSION);
+                    }
+                }
+
+
+
             }
         });
 
@@ -166,6 +252,79 @@ public class AddEvent extends Fragment {
         });
         return view;
     }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_PERMISSION_GRANT: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if(askForExternalStoragePermission()){
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        imgName = "img_" + numImages + ".jpg";
+                        File photo = new File(Environment.getExternalStorageDirectory(), imgName);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                        imageUri = Uri.fromFile(photo);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case EXTERNAL_PERMISSION :{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if(askForCameraPermission()){
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        imgName = "img_" + numImages + ".jpg";
+                        File photo = new File(Environment.getExternalStorageDirectory(), imgName);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                        imageUri = Uri.fromFile(photo);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    public boolean askForCameraPermission(){
+        // Here, thisActivity is the current activity
+        return true;
+//        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            return false;
+//        }
+//        else{
+//            return true;
+//        }
+    }
+
+    public boolean askForExternalStoragePermission(){
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -243,6 +402,11 @@ public class AddEvent extends Fragment {
     }
 
     public void createModal(){
+
+        //create interface for FCM
+        final FirebaseMessageInterface mInterface;
+        mInterface = RetrofitServiceGenerator.createService(FirebaseMessageInterface.class);
+
         // custom dialog
         listOfUsers = new ArrayList<>();
         List<User> friendToSplitBill;
@@ -300,6 +464,42 @@ public class AddEvent extends Fragment {
                 Log.d("DEBUG", ref.getKey());
                 ref.setValue(bill);
                 dialog.hide();
+
+                //sendNotifications
+                for (User notifUsr: auxFriends){
+                    if(notifUsr.getNotificationToken() != null){
+                        if(isConnectedToInternet()){
+                            SplitUsNotification splitNotif = new SplitUsNotification();
+                            splitNotif.setTo( notifUsr.getNotificationToken());
+                            Notification not = new Notification();
+                            not.setTitle("Split Us Notification");
+                            not.setText("Hi, " + user.getName() + " creates an event and add you!");
+                            not.setSound("default");
+                            not.setIcon("R.drawable.ic_stat_contract");
+                            splitNotif.setNotification(not);
+
+                            Map<String, String>  header = new HashMap<String, String>();
+                            header.put("Content-Type", "application/json");
+                            header.put("Authorization", "key=AIzaSyBB7qzEKFTGpoDJirMcfHC9bGhFgXTigLw");
+
+
+                            Call<ResponseFCM> response =  mInterface.sendNotification(splitNotif, header);
+                            response.enqueue(new Callback<ResponseFCM>() {
+                                @Override
+                                public void onResponse(Call<ResponseFCM> call, Response<ResponseFCM> response) {
+                                    Log.d("DEBUG", "NOTIFICATION SENDED");
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseFCM> call, Throwable t) {
+                                    Log.d("DEBUG", "NOTIFICATION NOT SENDED");
+                                }
+                            });
+                        }
+                    }
+                }
+
+
                 returnToEvents();
             }
         });

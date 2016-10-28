@@ -1,9 +1,12 @@
 package com.project.aaronkoti.splitus.adapters;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +20,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.aaronkoti.splitus.R;
 import com.project.aaronkoti.splitus.beans.Bill;
+import com.project.aaronkoti.splitus.beans.Notification;
+import com.project.aaronkoti.splitus.beans.ResponseFCM;
+import com.project.aaronkoti.splitus.beans.SplitUsNotification;
 import com.project.aaronkoti.splitus.beans.User;
 import com.project.aaronkoti.splitus.menuViews.AddEvent;
 import com.project.aaronkoti.splitus.menuViews.Events;
+import com.project.aaronkoti.splitus.net.FirebaseMessageInterface;
+import com.project.aaronkoti.splitus.net.RetrofitServiceGenerator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by User on 10/23/2016.
@@ -103,14 +117,60 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         friendReq.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(), "Event Removed", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "Event Removed", Toast.LENGTH_SHORT).show();
             }
         });
+
+        FirebaseMessageInterface mInterface = RetrofitServiceGenerator.createService(FirebaseMessageInterface.class);
+
+        //sendNotifications
+        for (User notifUsr: billToRemove.getUsrList()){
+            if(notifUsr.getNotificationToken() != null){
+                if(isConnectedToInternet()){
+                    SplitUsNotification splitNotif = new SplitUsNotification();
+                    splitNotif.setTo( notifUsr.getNotificationToken());
+                    Notification not = new Notification();
+                    not.setTitle("Split Us Notification");
+                    not.setText("Hi, " + currentUser.getName() + " delete one event in where you were subscribe total amount $" +String.valueOf(billToRemove.getAmount()) + " for each one $" + String.valueOf(billToRemove.getAmountEachOne()));
+                    not.setSound("default");
+                    //not.setIcon("@drawable/ic_person_pin_black_24dp");
+                    splitNotif.setNotification(not);
+
+                    Map<String, String> header = new HashMap<String, String>();
+                    header.put("Content-Type", "application/json");
+                    header.put("Authorization", "key=AIzaSyBB7qzEKFTGpoDJirMcfHC9bGhFgXTigLw");
+
+
+                    Call<ResponseFCM> response =  mInterface.sendNotification(splitNotif, header);
+                    response.enqueue(new Callback<ResponseFCM>() {
+                        @Override
+                        public void onResponse(Call<ResponseFCM> call, Response<ResponseFCM> response) {
+                            Log.d("DEBUG", "NOTIFICATION SENDED");
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseFCM> call, Throwable t) {
+                            Log.d("DEBUG", "NOTIFICATION NOT SENDED");
+                        }
+                    });
+                }
+            }
+        }
 
         listBills.remove(position);
         notifyItemRemoved(position);
     }
 
+    public boolean isConnectedToInternet(){
+        ConnectivityManager cm  = ((ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE));
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
