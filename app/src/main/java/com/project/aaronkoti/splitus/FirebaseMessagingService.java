@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.project.aaronkoti.splitus.menuViews.AddEvent;
@@ -44,10 +46,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
+            //Snackbar.make(getBaseContext().findViewById( R.id.content_split_us_menu), remoteMessage.getNotification().getBody(), Snackbar.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), remoteMessage.getNotification().getBody(), Toast.LENGTH_LONG);
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
+        // Also if you intend on generating your own notificat ions as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
 
