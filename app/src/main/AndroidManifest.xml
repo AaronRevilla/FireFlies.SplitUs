@@ -50,7 +50,6 @@
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -58,7 +57,17 @@
         <activity
             android:name=".SplitUsMenu"
             android:label="@string/title_activity_split_us_menu"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <intent-filter>
+                <action android:name="com.project.aaronkoti.SPLITUS"></action>
+                <!--<action android:name="android.intent.action.CREATE_DOCUMENT"></action>-->
+                <!--<action android:name="android.intent.action.OPEN_DOCUMENT"></action>-->
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION"></action>
+                <!--ACTION_CREATE_ITEM_LIST-->
+            </intent-filter>
+
+        </activity>
 
         <service
             android:name=".FirebaseMessagingService">

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -47,7 +49,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             //Snackbar.make(getBaseContext().findViewById( R.id.content_split_us_menu), remoteMessage.getNotification().getBody(), Snackbar.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(), remoteMessage.getNotification().getBody(), Toast.LENGTH_LONG);
+            ShowToastInIntentService(remoteMessage.getNotification().getBody());
+            //Toast.makeText( , remoteMessage.getNotification().getBody(), Toast.LENGTH_LONG);
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
@@ -76,5 +79,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
+    public void ShowToastInIntentService(final String sText)
+    {  final Context MyContext = this;
+        new Handler(Looper.getMainLooper()).post(new Runnable()
+        {  @Override public void run() {
+                Toast toast1 = Toast.makeText(MyContext, sText, Toast.LENGTH_LONG);
+                toast1.show();
+            }
+        });
+    };
 
 }
