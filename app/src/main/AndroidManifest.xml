@@ -61,7 +61,7 @@
 
             <intent-filter>
                 <action android:name="com.project.aaronkoti.SPLITUS"></action>
-                <!--<action android:name="android.intent.action.CREATE_DOCUMENT"></action>-->
+                <action android:name="android.intent.action.CREATE_DOCUMENT"></action>
                 <!--<action android:name="android.intent.action.OPEN_DOCUMENT"></action>-->
                 <action android:name="com.google.android.gms.actions.SEARCH_ACTION"></action>
                 <!--ACTION_CREATE_ITEM_LIST-->

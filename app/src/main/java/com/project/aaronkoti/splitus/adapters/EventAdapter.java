@@ -117,7 +117,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         friendReq.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(), "Event Removed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Event Removed", Toast.LENGTH_SHORT).show();
             }
         });
 
