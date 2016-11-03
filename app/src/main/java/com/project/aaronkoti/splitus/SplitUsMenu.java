@@ -27,17 +27,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.actions.NoteIntents;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.aaronkoti.splitus.beans.Bill;
 import com.project.aaronkoti.splitus.beans.User;
+import com.project.aaronkoti.splitus.menuViews.AddEvent;
 import com.project.aaronkoti.splitus.menuViews.AddFriends;
 import com.project.aaronkoti.splitus.menuViews.Events;
 import com.project.aaronkoti.splitus.menuViews.Friends;
 import com.project.aaronkoti.splitus.menuViews.UserInfo;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SplitUsMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -60,6 +69,7 @@ public class SplitUsMenu extends AppCompatActivity
         setContentView(R.layout.activity_split_us_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
 
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +100,14 @@ public class SplitUsMenu extends AppCompatActivity
 
 
         //get User from DB
-        String usrKey = getIntent().getStringExtra("userKey");
+        String usrKey = "";
+        if(intent.getAction() != null){
+            usrKey = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+        else{
+            usrKey = getIntent().getStringExtra("userKey");
+        }
+
         Log.d(TAG, usrKey);
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference root =  db.getReference("SplitUs");
@@ -126,6 +143,36 @@ public class SplitUsMenu extends AppCompatActivity
 
         //fragments
         fm = getSupportFragmentManager();
+
+        if(intent.getAction() != null){
+            Log.d("INTENT", intent.getAction());
+            if(intent.getAction().equals( NoteIntents.ACTION_CREATE_NOTE)){
+                String name = "";
+                String text = "";
+                String eQuery = "";
+
+                Bundle b = intent.getExtras();
+                text = b.get("android.intent.extra.TEXT").toString();
+                /*for(String k : keys){
+                    Log.d("Keys", k + " -> " + b.get(k).toString());
+                }
+                if(intent.hasExtra(NoteIntents.EXTRA_NAME)){
+                    name = intent.getStringExtra(NoteIntents.EXTRA_NAME);
+                    Log.d("ExtraName", name);
+                }
+                if(intent.hasExtra("android.intent.extra.TEXT")){
+                    text = intent.getStringExtra(NoteIntents.EXTRA_TEXT);
+                    Log.d("ExtraText", text);
+                }
+                if(intent.hasExtra(NoteIntents.EXTRA_NOTE_QUERY)){
+                    eQuery = intent.getStringExtra(NoteIntents.EXTRA_NOTE_QUERY);
+                    Log.d("ExtraNoteQuery", eQuery);
+                }*/
+
+                createNote(name,text, eQuery);
+            }
+        }
+
     }
 
     @Override
@@ -260,5 +307,40 @@ public class SplitUsMenu extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void createNote(String subject, String text, String eQuery) {
+
+        Log.d("CREATE NOTE", subject + " " + text + " " + eQuery);
+
+        Bundle bundle = new Bundle();
+        ft = fm.beginTransaction();
+        AddEvent addEventFrag= new AddEvent();
+        bundle.putSerializable("UserInfo", user);
+        bundle.putInt("EventNumber", 100);
+        Bill newBill = new Bill();
+        newBill.setDate( new Date());
+
+
+        //Pattern p = Pattern.compile("[\\d]*\\.*[\\d]+");
+       // Matcher m = p.matcher(text);
+        float numberFromVoice = (float)0.0;
+        try{
+            numberFromVoice = Float.valueOf(text);
+        }
+        catch (Exception e){
+            numberFromVoice = (float)0.0;
+        }
+
+
+        Log.d("float", numberFromVoice + "");
+
+        newBill.setAmount( numberFromVoice);
+        bundle.putSerializable("Bill", newBill);
+        addEventFrag.setArguments(bundle);
+
+        ft.replace(fragmentWrapper.getId(), addEventFrag);
+        ft.commit();
+
     }
 }

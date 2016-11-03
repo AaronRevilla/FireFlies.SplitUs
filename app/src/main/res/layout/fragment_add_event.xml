@@ -49,13 +49,13 @@
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:backgroundTint="#ddd"
+                app:backgroundTint="@color/colorPrimary"
                 style="@style/com_facebook_button"
                 android:id="@+id/saveBillButton"
                 android:layout_alignBottom="@+id/linearTotal"
                 android:layout_alignLeft="@+id/linearTotal"
                 app:srcCompat="@android:drawable/ic_menu_save"
-                app:rippleColor="?attr/colorBackgroundFloating" />
+                app:rippleColor="@android:color/transparent" />
 
         </LinearLayout>
 
@@ -73,10 +73,11 @@
             android:id="@+id/fragmentAddPhoto"
             android:layout_alignBottom="@+id/picturesRecyclerView"
             android:layout_alignRight="@+id/picturesRecyclerView"
-            app:backgroundTint="#ddd"
+            app:backgroundTint="@color/colorPrimary"
             android:layout_width="50dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            app:rippleColor="@color/tw__transparent" />
 
 
     </RelativeLayout>

@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,10 +42,12 @@
             android:id="@+id/fragmentAddEvent"
             android:layout_alignBottom="@+id/fragmentEventRecyclerV"
             android:layout_alignRight="@+id/fragmentEventRecyclerV"
-            app:backgroundTint="#ddd"
+            app:backgroundTint="@color/colorPrimary"
             android:layout_width="50dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            app:rippleColor="@android:color/white"
+            android:tint="@color/cardview_light_background" />
     </RelativeLayout>
 
 </FrameLayout>

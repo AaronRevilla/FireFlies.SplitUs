@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,6 +128,22 @@ public class AddEvent extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         this.user = (User) args.getSerializable("UserInfo");
+        if(this.user == null){
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference root =  db.getReference("SplitUs");
+            DatabaseReference userRef = root.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
         this.event = (Event) args.getSerializable("EventInfo");
         this.eventNumber = args.getInt("EventNumber");
         this.bill = (Bill)args.getSerializable("Bill");
